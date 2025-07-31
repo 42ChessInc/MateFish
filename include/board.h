@@ -13,6 +13,7 @@
 #ifndef BOARD_H
 #define BOARD_H
 
+#include <stdint.h>
 typedef uint64_t	Bitboard;
 
 typedef struct
