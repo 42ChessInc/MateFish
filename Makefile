@@ -4,7 +4,8 @@ CC = cc
 
 CFLAGS = -Wall -Werror -Wextra -Iinclude -lSDL2
 
-SRCS_DIR = ./srcs/main.c
+SRCS_DIR = ./srcs/main.c \
+	./srcs/check_moves.c
 
 OBJS_DIR = objs
 

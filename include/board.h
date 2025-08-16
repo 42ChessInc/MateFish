@@ -68,3 +68,7 @@ typedef struct
 #endif
 
 
+//function prototypes
+
+//moves
+int is_valid_move(t_board *board, int from_col, int from_row, int to_col, int to_row);
