@@ -2,7 +2,7 @@ NAME= autoMate
 
 CC = cc
 
-CFLAGS = -Wall -Werror -Wextra -Iinclude
+CFLAGS = -Wall -Werror -Wextra -Iinclude -lSDL2 
 
 SRCS_DIR = ./srcs/main.c
 

@@ -12,16 +12,59 @@
 
 #ifndef BOARD_H
 #define BOARD_H
+#include <unistd.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
 
+#include <SDL2/SDL.h>
+
+#include <stdio.h>
 #include <stdint.h>
-typedef uint64_t	Bitboard;
+
+
+
+#define	EMPTY	0b00000000
+#define	PAWN	0b00000001
+#define	ROOK	0b00000010
+#define	KNIGHT	0b00000100
+#define	BISHOP	0b00001000
+#define	QUEEN	0b00010000
+#define	KING	0b00100000
+#define	BLACK	0b01000000
+#define	WHITE	0b10000000
+
+#define WHITE_PAWN_CHAR 	"♟"
+#define BLACK_PAWN_CHAR 	"♙"
+#define BLACK_ROOK_CHAR 	"♖"
+#define WHITE_ROOK_CHAR 	"♜"
+#define BLACK_KNIGHT_CHAR 	"♘"
+#define WHITE_KNIGHT_CHAR 	"♞"
+#define BLACK_BISHOP_CHAR 	"♗"
+#define WHITE_BISHOP_CHAR 	"♝"
+#define BLACK_QUEEN_CHAR 	"♕"
+#define WHITE_QUEEN_CHAR 	"♛"
+#define BLACK_KING_CHAR 	"♔"
+#define WHITE_KING_CHAR 	"♚"
+#define WHITE_EMPTY_CHAR 	"#"
+#define BLACK_EMPTY_CHAR 	"*"
+
+#define BLACK_PIECES	(BLACK | PAWN | ROOK | KNIGHT | BISHOP | QUEEN | KING)
+#define WHITE_PIECES	(WHITE | PAWN | ROOK | KNIGHT | BISHOP | QUEEN | KING)
+
+#define IS_BLACK(piece)	((piece) & BLACK)
+#define IS_WHITE(piece)	((piece) & WHITE)
+//INVERTA ISSO
+
+
+
 
 typedef struct
 {
-	Bitboard	pieces[2][6]; //Squares occupied by each piece (6) for each color (2)
-
-	Bitboard	ocuppied; //All ocuppied squares (both black and white)
-	Bitboard	ocuppiedColor[2]; //Ocuppied squares by color
+	int turn;
+	int board[8][8];
 }	t_board;
 
 #endif
+
+
