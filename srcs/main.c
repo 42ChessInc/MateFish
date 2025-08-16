@@ -3,17 +3,17 @@
 
 void initialize_board(t_board *board)
 {
-	board->turn = 0; // 0 for player 1, 1 for player 2
+	board->turn = 0;
 	for (int i = 0; i < 8; i++)
 	{
 		for (int j = 0; j < 8; j++)
 		{
-			board->board[i][j] = 0; // Initialize all squares to empty
+			board->board[i][j] = 0;
 		}
 	}
 
 	board->turn = WHITE;
-		// Place black pieces
+
 	board->board[0][0] = ROOK | BLACK;
 	board->board[0][1] = KNIGHT | BLACK;
 	board->board[0][2] = BISHOP | BLACK;
@@ -25,7 +25,6 @@ void initialize_board(t_board *board)
 	for (int i = 0; i < 8; i++)
 		board->board[1][i] = PAWN | BLACK;
 
-	// Place white pieces
 	board->board[7][0] = ROOK | WHITE;
 	board->board[7][1] = KNIGHT | WHITE;
 	board->board[7][2] = BISHOP | WHITE;
@@ -46,8 +45,6 @@ void print_board(const t_board *board)
 	{
 		int row_pos = 0;
 		printf("%d ", 8 - column);
-
-
 		while (row_pos < 8)
 		{	//change write to printf(%s, char)
 			 if (board->board[column][row_pos] != EMPTY)
@@ -101,7 +98,7 @@ void print_board(const t_board *board)
 					printf("%s", WHITE_KING_CHAR);
 				}
 			 }
-			else  if ((column + row_pos) % 2 == 0)
+			else if ((column + row_pos) % 2 == 0)
 			{
 				printf("%s", "#");
 			}
@@ -110,20 +107,77 @@ void print_board(const t_board *board)
 				printf("%s", "*");
 			}
 			if (row_pos < 7)
-				printf("%s", " " );
+				printf(" ");
+
 			row_pos++;
 		}
 		printf("\n");
 		if (column == 7)
-			printf("  A B C D E F G H\n");
+			printf("  a b c d e f g h\n");
 		column++;
 	}
+}
+
+int move_piece(t_board *board, char *move)
+{
+	if (strlen(move) != 5)
+	{
+		fprintf(stderr, "Invalid move format. Use 'e2e4' format.\n");
+		return -1;
+	}
+
+	int start_col = move[0] - 'a';
+	int start_row = 8 - (move[1] - '0');
+	int end_col = move[2] - 'a';
+	int end_row = 8 - (move[3] - '0');
+	if (start_col < 0 || start_col > 7 || start_row < 0 || start_row > 7 ||
+		end_col < 0 || end_col > 7 || end_row < 0 || end_row > 7)
+	{		fprintf(stderr, "Move out of bounds.\n");
+		return -1;
+	}
+	int piece = board->board[start_row][start_col];
+	if (piece == EMPTY)
+	{
+		fprintf(stderr, "No piece at starting position.\n");
+		return -1;
+	}
+	if ((piece & WHITE) && board->turn == BLACK)
+	{
+		fprintf(stderr, "It's not your turn.\n");
+		return -1;
+	}
+	if ((piece & BLACK) && board->turn == WHITE)
+	{
+		fprintf(stderr, "It's not your turn.\n");
+		return -1;
+	}
+	board->board[end_row][end_col] = piece;
+	board->board[start_row][start_col] = EMPTY;
+	board->turn = (board->turn == WHITE) ? BLACK : WHITE;
+
+	return 0;
 }
 int	main(void)
 {
 	t_board board;
 	initialize_board(&board);
 	print_board(&board);
+	char move[6];
+	int bytesread = 0;
+	while (1)
+	{
+		printf("Enter your move: \n");
+		bytesread = read(0, move, 5);
+		if (bytesread == -1)
+		{
+			perror("getline");
+			return (1);
+		}
+		move[bytesread ] = '\0';
+		printf("You entered: %s\n\n", move);
+		move_piece(&board, move);
+		print_board(&board);
+	}
 
 	return (0);
 }
