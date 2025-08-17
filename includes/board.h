@@ -17,8 +17,6 @@
 #include <string.h>
 #include <stdbool.h>
 
-#include <SDL2/SDL.h>
-
 #include <stdio.h>
 #include <stdint.h>
 
@@ -31,8 +29,10 @@
 #define	BISHOP	0b00001000
 #define	QUEEN	0b00010000
 #define	KING	0b00100000
+
 #define	BLACK	0b01000000
 #define	WHITE	0b10000000
+
 
 #define WHITE_PAWN_CHAR 	"♟"
 #define BLACK_PAWN_CHAR 	"♙"
@@ -56,13 +56,14 @@
 #define IS_WHITE(piece)	((piece) & WHITE)
 //INVERTA ISSO
 
-
+#define EXIT_FAILURE 1
+#define EXIT_SUCCESS 0
 
 
 typedef struct
 {
 	int turn;
-	int board[8][8];
+	unsigned char board[8][8];
 }	t_board;
 
 #endif
@@ -72,3 +73,4 @@ typedef struct
 
 //moves
 int is_valid_move(t_board *board, int from_col, int from_row, int to_col, int to_row);
+void run_chess(void);

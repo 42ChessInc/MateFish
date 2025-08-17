@@ -1,5 +1,5 @@
 
-#include "../include/board.h"
+#include "../includes/board.h"
 
 
 int is_valid_pawn(t_board *board, int from_col, int from_row, int to_col, int to_row)

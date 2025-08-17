@@ -1,5 +1,6 @@
-#include "board.h"
+#include "../includes/board.h"
 #include <stdio.h>
+
 
 void initialize_board(t_board *board)
 {
@@ -165,27 +166,29 @@ int	main(void)
 {
 	t_board board;
 	initialize_board(&board);
-	print_board(&board);
-	char move[6];
-	int bytesread = 0;
-	while (1)
-	{
-		if (board.turn == WHITE)
-			printf("White's turn.\n");
-		else
-			printf("Black's turn.\n");
-		printf("Enter your move: \n");
-		bytesread = read(0, move, 5);
-		if (bytesread == -1)
-		{
-			perror("getline");
-			return (1);
-		}
-		move[bytesread ] = '\0';
-		printf("You entered: %s\n\n", move);
-		move_piece(&board, move);
-		print_board(&board);
-	}
+	// print_board(&board);
+	// char move[6];
+	// int bytesread = 0;
+	// while (1)
+	// {
+	// 	if (board.turn == WHITE)
+	// 		printf("White's turn.\n");
+	// 	else
+	// 		printf("Black's turn.\n");
+	// 	printf("Enter your move: \n");
+	// 	bytesread = read(0, move, 5);
+	// 	if (bytesread == -1)
+	// 	{
+	// 		perror("getline");
+	// 		return (1);
+	// 	}
+	// 	move[bytesread ] = '\0';
+	// 	printf("You entered: %s\n\n", move);
+	// 	move_piece(&board, move);
+	// 	print_board(&board);
+	// }
+
+	run_chess();
 
 	return (0);
 }
