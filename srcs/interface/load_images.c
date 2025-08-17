@@ -26,7 +26,6 @@ void get_textures(t_interface *interface)
 			&interface->image.line_length, &interface->image.endian);
 
 
-	ft_load_images(interface, &interface->background, "./assets/board.xpm");
 	ft_load_images(interface, &interface->white_pieces[interface->index_lookup[PAWN]], "./assets/white_pawn.xpm");
 	ft_load_images(interface, &interface->white_pieces[interface->index_lookup[ROOK]], "./assets/white_rook.xpm");
 	ft_load_images(interface, &interface->white_pieces[interface->index_lookup[KNIGHT]], "./assets/white_knight.xpm");

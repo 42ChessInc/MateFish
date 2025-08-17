@@ -14,8 +14,8 @@
 
 //get all prototypes from interface folder
 
-#define SCREEN_SIZE_X 800
-#define SCREEN_SIZE_Y 800
+#define SCREEN_SIZE_X 336
+#define SCREEN_SIZE_Y 336
 
 typedef struct s_image
 {

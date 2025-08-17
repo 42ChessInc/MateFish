@@ -4,7 +4,9 @@ CC = cc
 
 MLX_DIR= ./libs/mlx
 
+MLX= $(MLX_DIR)/libmlx.a
 
+all: $(NAME)
 
 $(MLX):
 	if [ ! -d "$(MLX_DIR)" ]; then \
@@ -12,13 +14,9 @@ $(MLX):
 	fi
 		@$(MAKE) -C $(MLX_DIR)
 
-
-MLX= $(MLX_DIR)/libmlx.a
-
 CFLAGS = -Wall -Werror -Wextra -Iincludes
 
 LDFLAGS = -L$(MLX_DIR) -lmlx_Linux -lXext -lX11 -lm
-
 
 
 SRCS_DIR = ./srcs/main.c \
