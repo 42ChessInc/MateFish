@@ -27,19 +27,19 @@ void get_textures(t_interface *interface)
 
 
 	ft_load_images(interface, &interface->background, "./assets/board.xpm");
-	ft_load_images(interface, &interface->white_pieces[interface->index_lookup[PAWN]], "./assets/white-pawn.xpm");
-	ft_load_images(interface, &interface->white_pieces[interface->index_lookup[ROOK]], "./assets/white-rook.xpm");
-	ft_load_images(interface, &interface->white_pieces[interface->index_lookup[KNIGHT]], "./assets/white-knight.xpm");
-	ft_load_images(interface, &interface->white_pieces[interface->index_lookup[BISHOP]], "./assets/white-bishop.xpm");
-	ft_load_images(interface, &interface->white_pieces[interface->index_lookup[QUEEN]], "./assets/white-queen.xpm");
-	ft_load_images(interface, &interface->white_pieces[interface->index_lookup[KING]], "./assets/white-king.xpm"	);
+	ft_load_images(interface, &interface->white_pieces[interface->index_lookup[PAWN]], "./assets/white_pawn.xpm");
+	ft_load_images(interface, &interface->white_pieces[interface->index_lookup[ROOK]], "./assets/white_rook.xpm");
+	ft_load_images(interface, &interface->white_pieces[interface->index_lookup[KNIGHT]], "./assets/white_knight.xpm");
+	ft_load_images(interface, &interface->white_pieces[interface->index_lookup[BISHOP]], "./assets/white_bishop.xpm");
+	ft_load_images(interface, &interface->white_pieces[interface->index_lookup[QUEEN]], "./assets/white_queen.xpm");
+	ft_load_images(interface, &interface->white_pieces[interface->index_lookup[KING]], "./assets/white_king.xpm"	);
 
-	ft_load_images(interface, &interface->black_pieces[interface->index_lookup[PAWN]], "./assets/black-pawn.xpm");
-	ft_load_images(interface, &interface->black_pieces[interface->index_lookup[ROOK]], "./assets/black-rook.xpm");
-	ft_load_images(interface, &interface->black_pieces[interface->index_lookup[KNIGHT]], "./assets/black-knight.xpm");
-	ft_load_images(interface, &interface->black_pieces[interface->index_lookup[BISHOP]], "./assets/black-bishop.xpm");
-	ft_load_images(interface, &interface->black_pieces[interface->index_lookup[QUEEN]], "./assets/black-queen.xpm");
-	ft_load_images(interface, &interface->black_pieces[interface->index_lookup[KING]], "./assets/black-king.xpm");
+	ft_load_images(interface, &interface->black_pieces[interface->index_lookup[PAWN]], "./assets/black_pawn.xpm");
+	ft_load_images(interface, &interface->black_pieces[interface->index_lookup[ROOK]], "./assets/black_rook.xpm");
+	ft_load_images(interface, &interface->black_pieces[interface->index_lookup[KNIGHT]], "./assets/black_knight.xpm");
+	ft_load_images(interface, &interface->black_pieces[interface->index_lookup[BISHOP]], "./assets/black_bishop.xpm");
+	ft_load_images(interface, &interface->black_pieces[interface->index_lookup[QUEEN]], "./assets/black_queen.xpm");
+	ft_load_images(interface, &interface->black_pieces[interface->index_lookup[KING]], "./assets/black_king.xpm");
 
 
 }
