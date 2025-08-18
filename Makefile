@@ -29,7 +29,9 @@ SRCS_DIR = ./srcs/main.c \
 	./srcs/interface/init_window.c \
 	./srcs/interface/interface.c \
 	./srcs/interface/load_images.c \
-	./srcs/interface/render_utils.c
+	./srcs/interface/render_utils.c \
+	./srcs/interface/drawboard.c \
+	./srcs/interface/get_piece.c
 
 OBJS_DIR = objs
 

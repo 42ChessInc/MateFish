@@ -188,7 +188,7 @@ int	main(void)
 	// 	print_board(&board);
 	// }
 
-	run_chess();
+	run_chess(&board);
 
 	return (0);
 }

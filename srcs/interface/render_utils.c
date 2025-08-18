@@ -12,6 +12,24 @@
 
 #include "../../includes/interface.h"
 
+void drawborder(t_image *image, t_point pos, t_point size, int color)
+{
+
+
+
+	for (int i = 0; i < size.x; i++)
+	{
+		for (int j = 0; j < size.y; j++)
+		{
+			if ( i < 2 || i >= size.x - 2 || j < 2 || j >= size.y - 2 )
+			{
+
+				ft_pixelput(image, pos.x + i , pos.y + j, color);
+			}
+		}
+	}
+}
+
 void	drawrect(t_image *image, t_point pos, t_point size, int color)
 {
 	int	x = 0;

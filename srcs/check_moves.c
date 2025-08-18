@@ -1,6 +1,7 @@
 
 #include "../includes/board.h"
-
+#include "../includes/interface.h"
+unsigned char get_piece(t_board *board, int x, int y);
 
 int is_valid_pawn(t_board *board, int from_col, int from_row, int to_col, int to_row)
 {
@@ -32,7 +33,7 @@ int is_valid_pawn(t_board *board, int from_col, int from_row, int to_col, int to
 			return (1);
 		if ( from_col == 1 && to_col == from_col + 2 && to_row == from_row && to_piece == EMPTY &&  board->board[from_col + 1][from_row] == EMPTY)
 			return (1);
-		if (to_col == from_col + 1 && (to_row == from_row -1 || to_row == from_row + 1) && (to_piece & WHITE) && to_piece != EMPTY)
+		if (to_col == from_col + 1 && (to_row == from_row -1 || to_row == from_row + 1) && (to_piece & WHITE) == WHITE && to_piece != EMPTY)
 			return (1);
 		return (0);
 	}
@@ -67,9 +68,9 @@ int is_valid_rook(t_board *board, int from_col, int from_row, int to_col, int to
 	}
 	if (current_col == to_col && current_row == to_row)
 	{
-		if ((board->turn == WHITE) && ((to_piece & BLACK)|| to_piece == EMPTY))
+		if ((board->turn == WHITE) && ((to_piece & BLACK) == BLACK || to_piece == EMPTY))
 			return (1);
-		else if(board->turn == BLACK && ((to_piece & WHITE) || to_piece == EMPTY))
+		else if(board->turn == BLACK && ((to_piece & WHITE) == WHITE || to_piece == EMPTY))
 			return (1);
 	}
 	return (0);
@@ -83,9 +84,9 @@ int is_valid_knight(t_board *board, int from_col, int from_row, int to_col, int 
 	{
 		if (to_row == from_row -1 || to_row == from_row + 1 )
 		{
-			if ((board->turn == WHITE) && ((to_piece & BLACK)|| to_piece == EMPTY))
+			if ((board->turn == WHITE) && ((to_piece & BLACK) == BLACK || to_piece == EMPTY))
 				return (1);
-			else if(board->turn == BLACK && ((to_piece & WHITE) || to_piece == EMPTY))
+			else if(board->turn == BLACK && ((to_piece & WHITE) == WHITE || to_piece == EMPTY))
 				return (1);
 		}
 	}
@@ -93,9 +94,9 @@ int is_valid_knight(t_board *board, int from_col, int from_row, int to_col, int 
 	{
 		if (to_row == from_row -2 || to_row == from_row + 2 )
 		{
-			if ((board->turn == WHITE) && ((to_piece & BLACK)|| to_piece == EMPTY))
+			if ((board->turn == WHITE) && ((to_piece & BLACK) == BLACK || to_piece == EMPTY))
 				return (1);
-			else if(board->turn == BLACK && ((to_piece & WHITE) || to_piece == EMPTY))
+			else if(board->turn == BLACK && ((to_piece & WHITE) == WHITE || to_piece == EMPTY))
 				return (1);
 		}
 	}
@@ -130,9 +131,9 @@ int is_valid_bishop(t_board *board, int from_col, int from_row, int to_col, int 
 
 	if (current_col == to_col && current_row == to_row)
 	{
-		if ((board->board[from_col][from_row] & WHITE) && ((to_piece & BLACK)|| to_piece == EMPTY))
+		if (((board->board[from_col][from_row] & WHITE) == WHITE) && ((to_piece & BLACK) == BLACK || to_piece == EMPTY))
 			return (1);
-		else if(!(board->board[from_col][from_row] & WHITE) && ((to_piece & WHITE) || to_piece == EMPTY))
+		else if(!((board->board[from_col][from_row] & WHITE) == WHITE) && ((to_piece & WHITE) == WHITE || to_piece == EMPTY))
 			return (1);
 	}
 	return (0);
@@ -147,12 +148,13 @@ int is_valid_king(t_board *board, int from_col, int from_row, int to_col, int to
 		return (0);
 	if (abs(to_col - from_col) > 1 || abs(to_row - from_row) > 1)
 		return (0);
-	if (board->turn == WHITE && ((to_piece & BLACK)|| to_piece == EMPTY))
+	if (board->turn == WHITE && ((to_piece & BLACK) == BLACK || to_piece == EMPTY))
 		return (1);
-	else if(board->turn == BLACK && ((to_piece & WHITE) || to_piece == EMPTY))
+	else if(board->turn == BLACK && ((to_piece & WHITE) == WHITE || to_piece == EMPTY))
 		return (1);
 	return (0);
 }
+
 int is_valid_queen(t_board *board, int from_col, int from_row, int to_col, int to_row)
 {
 	if (is_valid_bishop(board, from_col, from_row, to_col, to_row))
@@ -162,10 +164,62 @@ int is_valid_queen(t_board *board, int from_col, int from_row, int to_col, int t
 	return (0);
 }
 
+int is_in_check (t_board *board)
+{
+	int col, row;
+	if (board->turn == WHITE)
+	{
+		 row = board->black_king_pos[1];
+		 col = board->black_king_pos[0];
+	}
+	else
+	{
+		 row = board->white_king_pos[1];
+		 col = board->white_king_pos[0];
+	}
+	for (int i = 0; i < 8; i++)
+	{
+		for (int j = 0; j < 8; j++)
+		{
+			if (i == col && j == row)
+				continue;
+			if (is_valid_move(board, i, j, col, row))
+			{
+				fprintf(stderr, "King is in check from %d, %d\n", i, j);
+				if ((get_piece(board, j, i) & PAWN) == PAWN)
+				{
+					fprintf(stderr, "Piece is a pawn\n");
+				}
+				else if (get_piece(board, j, i) & ROOK)
+				{
+					fprintf(stderr, "Piece is a rook\n");
+				}
+				else if (get_piece(board, j, i) & KNIGHT)
+				{
+					fprintf(stderr, "Piece is a knight\n");
+				}
+				else if (get_piece(board, j, i) & BISHOP)
+				{
+					fprintf(stderr, "Piece is a bishop\n");
+				}
+				else if (get_piece(board, j, i) & QUEEN)
+				{
+					fprintf(stderr, "Piece is a queen\n");
+				}
+				else if (get_piece(board, j, i) & KING)
+				{
+					fprintf(stderr, "Piece is a king\n");
+				}
+				return (1);
+			}
+		}
+	}
+	return (0);
+}
+
 int is_valid_move(t_board *board, int from_col, int from_row, int to_col, int to_row)
 {
-	printf("Checking move from (%d, %d) to (%d, %d)\n", from_col, from_row, to_col, to_row);
-	int piece = board->board[from_col][from_row];
+	int piece = get_piece(board, from_row, from_col);
 	if (piece == EMPTY)
 		return (0);
 	if ((piece & WHITE) && board->turn == BLACK)
@@ -178,18 +232,24 @@ int is_valid_move(t_board *board, int from_col, int from_row, int to_col, int to
 	{
 		case PAWN:
 			return is_valid_pawn(board, from_col, from_row, to_col, to_row);
+			break;
 		case ROOK:
 			return is_valid_rook(board, from_col, from_row, to_col, to_row);
+			break;
 		case KNIGHT:
 			return is_valid_knight(board, from_col, from_row, to_col, to_row);
+			break;
 		case BISHOP:
 			return is_valid_bishop(board, from_col, from_row, to_col, to_row);
+			break;
 		case QUEEN:
 			return is_valid_queen(board, from_col, from_row, to_col, to_row);
 		case KING:
 			return is_valid_king(board, from_col, from_row, to_col, to_row);
+			break;
 		default:
 			return 0;
 	}
 	return (0);
 }
+

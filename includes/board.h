@@ -64,6 +64,8 @@ typedef struct
 {
 	int turn;
 	unsigned char board[8][8];
+	unsigned char white_king_pos[2]; // [col, row] position of the king
+	unsigned char black_king_pos[2]; // [col, row] position of the king
 }	t_board;
 
 #endif
@@ -73,4 +75,4 @@ typedef struct
 
 //moves
 int is_valid_move(t_board *board, int from_col, int from_row, int to_col, int to_row);
-void run_chess(void);
+void run_chess(t_board *board);

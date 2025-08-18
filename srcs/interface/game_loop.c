@@ -12,9 +12,33 @@
 
 #include "../../includes/interface.h"
 
+void	drawtext(t_interface *interface)
+{
+	mlx_string_put(interface->mlx_ptr, interface->win_ptr, 512 + 64, 10, 0xFFFFFF, "Turn: ");
+	if (interface->board->turn == WHITE)
+		mlx_string_put(interface->mlx_ptr, interface->win_ptr, 512 + 64, 30, 0xFFFFFF, "White");
+	else
+		mlx_string_put(interface->mlx_ptr, interface->win_ptr, 512 + 64, 30, 0xFFFFFF, "Black");
+
+	if (interface->selected_piece[0] != -1)
+	{
+		char text[50];
+		sprintf(text, "Selected Piece: %c, %d", interface->selected_piece[0] + 'a', 8 - interface->selected_piece[1]);
+		mlx_string_put(interface->mlx_ptr, interface->win_ptr, 512 + 64, 50, 0xFFFFFF, text);
+	}
+	else
+	{
+		mlx_string_put(interface->mlx_ptr, interface->win_ptr, 512 + 64, 50, 0xFFFFFF, "No Piece Selected");
+	}
+}
+
 int	update(t_interface *interface)
 {
 	calculate_Delta(interface);
+	mlx_mouse_get_pos(interface->mlx_ptr, interface->win_ptr, &interface->mouse_x, &interface->mouse_y);
+
+
+
 
 	return (1);
 }
@@ -22,9 +46,12 @@ int	update(t_interface *interface)
 int	renderer(t_interface *interface)
 {
 	memset(interface->image.addr, 0, SCREEN_SIZE_X * SCREEN_SIZE_Y * (interface->image.bits_per_pixel / 8));
-	drawtexture(interface, (t_point){0, 0}, &interface->background, 1.0f);
-	drawtexture(interface, (t_point){0, 0}, &interface->white_pieces[interface->index_lookup[PAWN]], 1.0f);
+	drawtext(interface);
+	drawboard(interface, interface->board);
+
+
 	mlx_put_image_to_window(interface->mlx_ptr, interface->win_ptr, interface->image.img, 0, 0);
+	drawtext(interface);
 	return (1);
 }
 
