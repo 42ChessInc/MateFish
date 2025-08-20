@@ -131,9 +131,9 @@ int is_valid_bishop(t_board *board, int from_col, int from_row, int to_col, int 
 
 	if (current_col == to_col && current_row == to_row)
 	{
-		if (((board->board[from_col][from_row] & WHITE) == WHITE) && ((to_piece & BLACK) == BLACK || to_piece == EMPTY))
+		if ((board->turn == WHITE) && ((to_piece & BLACK) == BLACK || to_piece == EMPTY))
 			return (1);
-		else if(!((board->board[from_col][from_row] & WHITE) == WHITE) && ((to_piece & WHITE) == WHITE || to_piece == EMPTY))
+		else if((board->turn == BLACK) && ((to_piece & WHITE) == WHITE || to_piece == EMPTY))
 			return (1);
 	}
 	return (0);
@@ -169,13 +169,13 @@ int is_in_check (t_board *board)
 	int col, row;
 	if (board->turn == WHITE)
 	{
-		 row = board->black_king_pos[1];
-		 col = board->black_king_pos[0];
+		 row = board->black_king_pos[0];
+		 col = board->black_king_pos[1];
 	}
 	else
 	{
-		 row = board->white_king_pos[1];
-		 col = board->white_king_pos[0];
+		 row = board->white_king_pos[0];
+		 col = board->white_king_pos[1];
 	}
 	for (int i = 0; i < 8; i++)
 	{
@@ -183,30 +183,30 @@ int is_in_check (t_board *board)
 		{
 			if (i == col && j == row)
 				continue;
-			if (is_valid_move(board, i, j, col, row))
+			if (is_valid_move(board, j, i, col, row))
 			{
-				fprintf(stderr, "King is in check from %d, %d\n", i, j);
-				if ((get_piece(board, j, i) & PAWN) == PAWN)
+				fprintf(stderr, " is in check from %d, %d\n", i, j);
+				if ((get_piece(board, i, j) & PAWN) == PAWN)
 				{
 					fprintf(stderr, "Piece is a pawn\n");
 				}
-				else if (get_piece(board, j, i) & ROOK)
+				else if ((get_piece(board, i, j	) & ROOK) == ROOK)
 				{
 					fprintf(stderr, "Piece is a rook\n");
 				}
-				else if (get_piece(board, j, i) & KNIGHT)
+				else if ((get_piece(board, i, j) & KNIGHT) == KNIGHT)
 				{
 					fprintf(stderr, "Piece is a knight\n");
 				}
-				else if (get_piece(board, j, i) & BISHOP)
+				else if ((get_piece(board, i, j) & BISHOP) == BISHOP)
 				{
 					fprintf(stderr, "Piece is a bishop\n");
 				}
-				else if (get_piece(board, j, i) & QUEEN)
+				else if ((get_piece(board, i, j) & QUEEN) == QUEEN)
 				{
 					fprintf(stderr, "Piece is a queen\n");
 				}
-				else if (get_piece(board, j, i) & KING)
+				else if ((get_piece(board, i, j) & KING) == KING)
 				{
 					fprintf(stderr, "Piece is a king\n");
 				}
@@ -222,9 +222,9 @@ int is_valid_move(t_board *board, int from_col, int from_row, int to_col, int to
 	int piece = get_piece(board, from_row, from_col);
 	if (piece == EMPTY)
 		return (0);
-	if ((piece & WHITE) && board->turn == BLACK)
+	if ((piece & WHITE) == WHITE && board->turn == BLACK)
 		return (0);
-	if ((piece & BLACK) && board->turn == WHITE)
+	if ((piece & BLACK) == BLACK 	&& board->turn == WHITE)
 		return (0);
 	// FIRST TWO BITS ARE COLORS LAST SIX ARE PIECE TYPES
 

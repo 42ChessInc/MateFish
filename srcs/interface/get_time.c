@@ -19,3 +19,8 @@ long long	get_time(void)
 	gettimeofday(&tv, NULL);
 	return ((long long)(tv.tv_sec * 1000) + (tv.tv_usec / 1000));
 }
+
+void 	get_mouse_pos(t_interface *interface, int *x, int *y)
+{
+	mlx_mouse_get_pos(interface->mlx_ptr, interface->win_ptr, x, y);
+}

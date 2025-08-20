@@ -59,7 +59,7 @@ typedef struct s_point
 
 
 //int		is_in_check(t_board *board);
-int is_in_check( t_board *board);
+int		is_in_check( t_board *board);
 void	init_window(t_interface *interface);
 void	get_textures(t_interface *interface);
 int		free_displays(t_interface *interface);
@@ -73,6 +73,7 @@ void drawboard(t_interface *interface, t_board *board);
 void	drawrect(t_image *image, t_point pos, t_point size, int color);
 void drawborder(t_image *image, t_point pos, t_point size, int color);
 unsigned char get_piece(t_board *board, int x, int y);
+void 	get_mouse_pos(t_interface *interface, int *x, int *y);
 
 
 

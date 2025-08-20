@@ -21,6 +21,20 @@ int mouse_hook(int button, int x, int y, t_interface *interface)
 
 	if (mouse_x < 0 || mouse_x >= 8 || mouse_y < 0 || mouse_y >= 8)
 		return (0);
+	if (button == 3)
+	{
+		if (interface->board->turn == WHITE)
+		{
+			interface->board->turn = BLACK;
+		}
+		else
+		{
+			interface->board->turn = WHITE;
+		}
+		interface->selected_piece[0] = -1;
+		interface->selected_piece[1] = -1;
+
+	}
 	if (button == 1) // Left mouse button
 	{
 		if (interface->board->turn == WHITE)
@@ -41,6 +55,7 @@ int mouse_hook(int button, int x, int y, t_interface *interface)
 
 				if ((from_piece & KING) == KING)
 				{
+					fprintf(stderr, "Moving white king to %d, %d\n", mouse_x, mouse_y);
 					interface->board->white_king_pos[0] = mouse_x;
 					interface->board->white_king_pos[1] = mouse_y;
 				}
@@ -49,11 +64,19 @@ int mouse_hook(int button, int x, int y, t_interface *interface)
 				{
 					interface->board->board[interface->selected_piece[1]][interface->selected_piece[0]] = from_piece;
 					interface->board->board[mouse_y][mouse_x] = to_piece;
+					if ((from_piece & KING) == KING)
+					{
+						fprintf(stderr, "Moving white king to %d, %d\n", mouse_x, mouse_y);
+						interface->board->white_king_pos[0] = interface->selected_piece[0];
+						interface->board->white_king_pos[1] = interface->selected_piece[1];
+					}
 					interface->selected_piece[0] = -1;
 					interface->selected_piece[1] = -1;
 					interface->board->turn = (interface->board->turn == WHITE) ? BLACK : WHITE;
 					fprintf(stderr, "Invalid move: King is in check.\n");
 					return (0);
+
+
 				}
 
 				interface->selected_piece[0] = -1;
@@ -81,14 +104,24 @@ int mouse_hook(int button, int x, int y, t_interface *interface)
 					interface->board->black_king_pos[0] = mouse_x;
 					interface->board->black_king_pos[1] = mouse_y;
 				}
+				interface->board->turn = (interface->board->turn == WHITE) ? BLACK : WHITE;
 				if (is_in_check(interface->board))
 				{
 					interface->board->board[interface->selected_piece[1]][interface->selected_piece[0]] = from_piece;
 					interface->board->board[mouse_y][mouse_x] = to_piece;
+					if ((from_piece & KING) == KING)
+					{
+						fprintf(stderr, "Moving white king to %d, %d\n", mouse_x, mouse_y);
+						interface->board->black_king_pos[0] = interface->selected_piece[0];
+						interface->board->black_king_pos[1] = interface->selected_piece[1];
+					}
+					interface->selected_piece[0] = -1;
+					interface->selected_piece[1] = -1;
+					interface->board->turn = (interface->board->turn == WHITE) ? BLACK : WHITE;
 					fprintf(stderr, "Invalid move: King is in check.\n");
 					return (0);
 				}
-				interface->board->turn = (interface->board->turn == WHITE) ? BLACK : WHITE;
+
 				interface->selected_piece[0] = -1;
 				interface->selected_piece[1] = -1;
 			}
