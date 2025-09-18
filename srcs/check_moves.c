@@ -139,11 +139,13 @@ int is_valid_bishop(t_board *board, int from_col, int from_row, int to_col, int 
 	return (0);
 
 }
-
+//need to account for castle
 int is_valid_king(t_board *board, int from_col, int from_row, int to_col, int to_row)
 {
 	int to_piece = board -> board[to_col][to_row];
 
+	//see if moving 2 spaces and the direction 
+		
 	if (from_row == to_row && from_col == to_col)
 		return (0);
 	if (abs(to_col - from_col) > 1 || abs(to_row - from_row) > 1)
