@@ -275,6 +275,7 @@ char *communicate_with_stockfish(char *moves)
     else
         snprintf(pos_cmd, sizeof(pos_cmd), "position startpos");
     send_command_to_stockfish(pos_cmd, pipe_stdin[1]);
+	send_command_to_stockfish(pos_cmd, pipe_stdin[1]);
     send_command_to_stockfish("go depth 1", pipe_stdin[1]);
 
     char line[512];

@@ -71,6 +71,23 @@ int mouse_hook(int button, int x, int y, t_interface *interface)
 					fprintf(stderr, "Moving white king to %d, %d\n", mouse_x, mouse_y);
 					interface->board->white_king_pos[0] = mouse_x;
 					interface->board->white_king_pos[1] = mouse_y;
+					if (interface->selected_piece[0] == 4 && mouse_x == 6 && mouse_y == 7)
+					{
+			
+						if (interface->board->board[7][7] == (ROOK | WHITE))
+						{
+							interface->board->board[7][7] = EMPTY;
+							interface->board->board[7][5] = (ROOK | WHITE);
+						}
+					}
+					else if (interface->selected_piece[0] == 4 && mouse_x == 2 && mouse_y == 7)
+					{
+						if (interface->board->board[7][0] == (ROOK | WHITE))
+						{
+							interface->board->board[7][0] = EMPTY;
+							interface->board->board[7][3] = (ROOK | WHITE);
+						}
+					}
 				}
 				interface->board->turn = (interface->board->turn == WHITE) ? BLACK : WHITE;
 				if (is_in_check(interface->board))
@@ -125,7 +142,6 @@ int mouse_hook(int button, int x, int y, t_interface *interface)
 				interface->board->board[from_row][from_col] = EMPTY;
 				if ((from_piece & KING) == KING)
 				{
-			
 					if (from_col == 4 && to_col == 6 && from_row == to_row)
 					{
 			

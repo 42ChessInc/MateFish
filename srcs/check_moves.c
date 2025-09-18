@@ -144,8 +144,24 @@ int is_valid_king(t_board *board, int from_col, int from_row, int to_col, int to
 {
 	int to_piece = board -> board[to_col][to_row];
 
-	//see if moving 2 spaces and the direction 
-		
+	//see if moving 2 spaces and the direction
+
+	if (from_row == 4 && to_row == 6 && from_col == 7 && to_col == 7)
+	{
+		if (board->board[7][7] == (ROOK | WHITE))
+		{
+			return (1);
+		}
+		return (0);
+	}
+	else if (from_row == 4 && to_row == 2 && from_col == 7 && to_col == 7)
+	{
+		if (board->board[7][0] == (ROOK | WHITE))
+		{
+				return (1);
+		}
+		return (0);
+	}
 	if (from_row == to_row && from_col == to_col)
 		return (0);
 	if (abs(to_col - from_col) > 1 || abs(to_row - from_row) > 1)
