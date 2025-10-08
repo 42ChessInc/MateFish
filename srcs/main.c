@@ -1,5 +1,9 @@
 #include "../includes/board.h"
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/types.h>
 
 
 void initialize_board(t_board *board)
@@ -120,7 +124,7 @@ void print_board(const t_board *board)
 
 int move_piece(t_board *board, char *move)
 {
-	if (strlen(move) != 5)
+	if (strlen(move) != 4)
 	{
 		fprintf(stderr, "Invalid move format. Use 'e2e4' format.\n");
 		return -1;
@@ -162,33 +166,220 @@ int move_piece(t_board *board, char *move)
 
 	return 0;
 }
-int	main(void)
+
+char *stringjoin(char *s1, char *s2)
+{
+	int totallen = 0;
+	if (!s1)
+	{
+		totallen = strlen(s2);
+	}
+	else
+	{
+		totallen = strlen(s1) + strlen(s2);
+	}
+	char *result = malloc(totallen + 1);
+	if (!result)
+		return NULL;
+	if (s1)
+		strcpy(result, s1);
+	if (s2)
+		strcpy(result + (s1 ? strlen(s1) : 0), s2);
+	return result;
+}
+void open_stockfish()
+{
+	int pipe_stdin[2];
+	int pipe_stdout[2];
+	if (pipe(pipe_stdin) == -1 || pipe(pipe_stdout) == -1)
+	{
+		perror("pipe");
+		exit(EXIT_FAILURE);
+	}
+	int pid = fork();
+	if (pid == -1)
+	{
+		perror("fork");
+		exit(EXIT_FAILURE);
+	}
+	if (pid == 0)
+	{
+		// Child process
+		close(pipe_stdin[1]);
+		close(pipe_stdout[0]);
+		dup2(pipe_stdin[0], STDIN_FILENO);
+		dup2(pipe_stdout[1], STDOUT_FILENO);
+		execlp("./stockfish", "./stockfish", NULL);
+		perror("execlp");
+		exit(EXIT_FAILURE);
+	}
+	close(pipe_stdin[0]);
+	close(pipe_stdout[1]);
+}
+
+void send_command_to_stockfish(const char *command, int write_fd)
+{
+	write(write_fd, command, strlen(command));
+	write(write_fd, "\n", 1);
+}
+
+void handshake(int read_fd)
+{
+	char buffer[1024];
+	read(read_fd, buffer, sizeof(buffer));
+}
+
+void close_stockfish(int read_fd, int write_fd)
+{
+	close(read_fd);
+	close(write_fd);
+}
+
+//do the connection uci, ready, position, go, return bestmove such as e7e5
+char *communicate_with_stockfish(char *moves)
+{
+    int pipe_stdin[2];
+    int pipe_stdout[2];
+    if (pipe(pipe_stdin) == -1 || pipe(pipe_stdout) == -1)
+    {
+        perror("pipe");
+        exit(EXIT_FAILURE);
+    }
+    int pid = fork();
+    if (pid == -1)
+    {
+        perror("fork");
+        exit(EXIT_FAILURE);
+    }
+    if (pid == 0)
+    {
+        // Child process
+        close(pipe_stdin[1]);
+        close(pipe_stdout[0]);
+        dup2(pipe_stdin[0], STDIN_FILENO);
+        dup2(pipe_stdout[1], STDOUT_FILENO);
+        execlp("./stockfish", "./stockfish", NULL);
+        perror("execlp");
+        exit(EXIT_FAILURE);
+    }
+    close(pipe_stdin[0]);
+    close(pipe_stdout[1]);
+
+    send_command_to_stockfish("uci", pipe_stdin[1]);
+    handshake(pipe_stdout[0]);
+    send_command_to_stockfish("isready", pipe_stdin[1]);
+    handshake(pipe_stdout[0]);
+    char pos_cmd[4096];
+    if (moves && strlen(moves) > 0)
+        snprintf(pos_cmd, sizeof(pos_cmd), "position startpos moves %s", moves);
+    else
+        snprintf(pos_cmd, sizeof(pos_cmd), "position startpos");
+    send_command_to_stockfish(pos_cmd, pipe_stdin[1]);
+	send_command_to_stockfish(pos_cmd, pipe_stdin[1]);
+    send_command_to_stockfish("go depth 1", pipe_stdin[1]);
+
+    char line[512];
+    char *move = NULL;
+    FILE *fp = fdopen(pipe_stdout[0], "r");
+    if (!fp) {
+        perror("fdopen");
+        close_stockfish(pipe_stdout[0], pipe_stdin[1]);
+        return strdup("");
+    }
+    while (fgets(line, sizeof(line), fp)) {
+        // Remove newline
+        line[strcspn(line, "\r\n")] = 0;
+        if (strncmp(line, "bestmove ", 9) == 0) {
+            char *bestmove = line + 9;
+            char *end = strchr(bestmove, ' ');
+            if (end)
+                *end = '\0';
+            move = strdup(bestmove);
+            printf("Stockfish bestmove: %s\n", move);
+            break;
+        }
+    }
+    if (!move) {
+        fprintf(stderr, "Failed to get bestmove from Stockfish.\n");
+        move = strdup("");
+    }
+    fclose(fp);
+    close(pipe_stdin[1]);
+    return move;
+}
+
+//implem
+int	terminal_chess(t_board *board)
+{
+	 print_board(board);
+	 char *moves = NULL;
+	 char move[6];
+	 char *movestock;
+	 int bytesread = 0;
+	 while (1)
+	 {
+	 	if (board->turn == WHITE)
+	 		printf("White's turn.\n");
+	 	else
+	 		printf("Black's turn.\n");
+	 	if (board->turn == BLACK)
+	 	{
+	 		movestock = communicate_with_stockfish(moves);
+	 		printf("Stockfish plays: %s\n\n", movestock);
+	 		move_piece(board, movestock);
+	 		if (moves == NULL || moves[0] == '\0')
+                 moves = strdup(movestock);
+             else {
+                 char *tmp = stringjoin(moves, " ");
+                 free(moves);
+                 moves = stringjoin(tmp, movestock);
+                 free(tmp);
+             }
+	 		free(movestock);
+	 		print_board(board);
+	 		continue;
+	 	}
+	 	else
+	 	{
+	 		printf("Enter your move: \n");
+	 		memset(move, 0, sizeof(move));
+	 		bytesread = read(0, move, 5);
+	 		if (bytesread == -1)
+	 		{
+	 			perror("read");
+	 			return (1);
+	 		}
+	 	}
+	 	if (bytesread > 0 && move[bytesread - 1] == '\n')
+	 		move[bytesread - 1] = '\0';
+	 	else
+	 		move[bytesread] = '\0';
+	 	printf("You entered: %s\n\n", move);
+	 	move_piece(board, move);
+	 	if (moves == NULL || moves[0] == '\0')
+             moves = strdup(move);
+         else {
+             char *tmp = stringjoin(moves, " ");
+             free(moves);
+             moves = stringjoin(tmp, move);
+             free(tmp);
+         }
+	 	print_board(board);
+	  }
+}
+
+//ents this on the actual game to play as black*/
+int	main(int ac, char **av)
 {
 	t_board board;
 	initialize_board(&board);
-	// print_board(&board);
-	// char move[6];
-	// int bytesread = 0;
-	// while (1)
-	// {
-	// 	if (board.turn == WHITE)
-	// 		printf("White's turn.\n");
-	// 	else
-	// 		printf("Black's turn.\n");
-	// 	printf("Enter your move: \n");
-	// 	bytesread = read(0, move, 5);
-	// 	if (bytesread == -1)
-	// 	{
-	// 		perror("getline");
-	// 		return (1);
-	// 	}
-	// 	move[bytesread ] = '\0';
-	// 	printf("You entered: %s\n\n", move);
-	// 	move_piece(&board, move);
-	// 	print_board(&board);
-	// }
-
-	run_chess(&board);
-
+	if (ac == 2 && !strcmp(av[1], "--debug"))
+		terminal_chess(&board);
+	else if (ac == 2 && !strcmp(av[1], "--help"))
+			printf("%s%s%s%s", RED, HELP_VISUAL, HELP_DEBUG, RST);
+	else if (ac == 1)
+		run_chess(&board);
+	else
+		printf("%sError!%s\n", RED, RST);
 	return (0);
 }

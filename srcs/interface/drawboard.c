@@ -11,9 +11,9 @@ void drawboard(t_interface *interface, t_board *board)
 		for (x = 0; x < 8; x++)
 		{
 			if ((x + y) % 2 == 0)
-				color = 0xFFFFFF;
+				color = 0xeeeed2;
 			else
-				color = 0x000000;
+				color = 0x769656;
 			drawrect(&interface->image, (t_point){x * 64, y * 64}, (t_point){64, 64}, color);
 			unsigned char piece = board->board[y][x];
 			if (piece != EMPTY)

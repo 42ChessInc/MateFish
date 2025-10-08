@@ -46,6 +46,7 @@ typedef struct s_interface
 	int mouse_y;
 	int mouse_pressed;
 	int mouse_released;
+	char *moves;
 
 	unsigned char	*index_lookup;
 
@@ -74,9 +75,7 @@ void	drawrect(t_image *image, t_point pos, t_point size, int color);
 void drawborder(t_image *image, t_point pos, t_point size, int color);
 unsigned char get_piece(t_board *board, int x, int y);
 void 	get_mouse_pos(t_interface *interface, int *x, int *y);
-
-
-
+char *communicate_with_stockfish(char *moves);
 
 
 
