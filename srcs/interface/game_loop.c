@@ -66,7 +66,37 @@ int interface_loop(t_interface *interface)
 			int from_row = 8 - (stockmove[1] - '0');
 			int to_col = stockmove[2] - 'a';
 			int to_row = 8 - (stockmove[3] - '0');
-			char from_piece = get_piece(interface->board, from_col, from_row);
+			unsigned char from_piece = get_piece(interface->board, from_col, from_row);
+			
+			if (from_piece == (KING | WHITE) || from_piece == (KING | BLACK))
+			{
+				if (interface->board->turn == WHITE)
+				{
+					if (to_row == 7 && to_col == 6)
+					{
+						interface->board->board[to_row][to_col + 1] = EMPTY;
+						interface->board->board[from_row][from_col + 1] = (ROOK | WHITE);
+					}
+					if (to_row == 7 && to_col == 2)
+					{
+						interface->board->board[to_row][to_col - 2] = EMPTY;
+						interface->board->board[from_row][from_col - 1] = (ROOK | WHITE);
+					}
+				}
+				if (interface->board->turn == BLACK)
+				{
+					if (to_row == 0 && to_col == 6)
+					{
+						interface->board->board[to_row][to_col + 1] = EMPTY;
+						interface->board->board[from_row][from_col + 1] = (ROOK | BLACK);
+					}
+					if (to_row == 0 && to_col == 2)
+					{
+						interface->board->board[to_row][to_col - 2] = EMPTY;
+						interface->board->board[from_row][from_col - 1] = (ROOK | BLACK);
+					}
+				}
+			}
 			interface->board->board[to_row][to_col] = from_piece;
 			interface->board->board[from_row][from_col] = EMPTY;
 			interface->board->turn = (interface->board->turn == WHITE) ? BLACK : WHITE;

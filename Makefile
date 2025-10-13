@@ -26,7 +26,7 @@ $(MLX):
 	fi
 		@$(MAKE) -C $(MLX_DIR)
 
-CFLAGS = -Iincludes
+CFLAGS = -Iincludes -g
 
 LDFLAGS = -L$(MLX_DIR) -lmlx_Linux -lXext -lX11 -lm
 
