@@ -263,7 +263,7 @@ void run_chess(t_board *board)
 	init_window(&interface);
 	get_textures(&interface);
 	mlx_hook(interface.win_ptr, DestroyNotify, (1L<<17), free_displays, &interface);
-	mlx_mouse_hook(interface.win_ptr, mouse_hook, &interface);
+	//mlx_mouse_hook(interface.win_ptr, mouse_hook, &interface); // Disabled for bot vs bot
 	mlx_loop_hook(interface.mlx_ptr, interface_loop, &interface);
 	mlx_loop(interface.mlx_ptr);
 }

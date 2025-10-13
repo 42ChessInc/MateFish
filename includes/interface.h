@@ -76,6 +76,7 @@ void drawborder(t_image *image, t_point pos, t_point size, int color);
 unsigned char get_piece(t_board *board, int x, int y);
 void 	get_mouse_pos(t_interface *interface, int *x, int *y);
 char *communicate_with_stockfish(char *moves);
+char *stringjoin(char *s1, char *s2);
 
 
 

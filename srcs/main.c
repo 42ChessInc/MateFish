@@ -122,50 +122,59 @@ void print_board(const t_board *board)
 	}
 }
 
-int move_piece(t_board *board, char *move)
+void move_piece(t_board *board, const char *move)
 {
-	if (strlen(move) != 4)
-	{
-		fprintf(stderr, "Invalid move format. Use 'e2e4' format.\n");
-		return -1;
-	}
+    int start_col = move[1] - '1';
+    int start_row = move[0] - 'a';
+    int end_col   = move[3] - '1';
+    int end_row   = move[2] - 'a';
 
-	int start_row = move[0] - 'a';
-	int start_col = 8 - (move[1] - '0');
-	int end_row = move[2] - 'a';
-	int end_col = 8 - (move[3] - '0');
-	if (start_col < 0 || start_col > 7 || start_row < 0 || start_row > 7 ||
-		end_col < 0 || end_col > 7 || end_row < 0 || end_row > 7)
-	{		fprintf(stderr, "Move out of bounds.\n");
-		return -1;
-	}
-	int piece = board->board[start_col][start_row];
-	if (piece == EMPTY)
-	{
-		fprintf(stderr, "No piece at starting position.\n");
-		return -1;
-	}
-	if ((piece & WHITE) && board->turn == BLACK)
-	{
-		fprintf(stderr, "It's not your turn.\n");
-		return -1;
-	}
-	if ((piece & BLACK) && board->turn == WHITE)
-	{
-		fprintf(stderr, "It's not your turn.\n");
-		return -1;
-	}
-	if (!is_valid_move(board, start_col, start_row, end_col, end_row))
-	{
-		fprintf(stderr, "Invalid move for the piece.\n");
-		return -1;
-	}
-	board->board[end_col][end_row] = piece;
-	board->board[start_col][start_row] = EMPTY;
-	board->turn = (board->turn == WHITE) ? BLACK : WHITE;
+    unsigned char piece = board->board[7 - start_col][start_row];
+    unsigned char target = board->board[7 - end_col][end_row];
 
-	return 0;
+    // --- Handle castling (white and black) ---
+    if ((piece & KING))
+    {
+        // White short castle: e1g1
+        if ((piece & WHITE) && start_row == 4 && start_col == 7 && end_row == 6 && end_col == 7)
+        {
+            board->board[7][5] = ROOK | WHITE; // f1
+            board->board[7][7] = EMPTY;        // h1
+            board->board[7][4] = EMPTY;        // e1 (king moved)
+			printf("King side castle\n");
+        }
+        // White long castle: e1c1
+        else if ((piece & WHITE) && start_row == 4 && start_col == 7 && end_row == 2 && end_col == 7)
+        {
+            board->board[7][3] = ROOK | WHITE; // d1
+            board->board[7][0] = EMPTY;        // a1
+            board->board[7][4] = EMPTY;        // e1 (king moved)
+			printf("Queen side castle\n");
+        }
+        // Black short castle: e8g8
+        else if ((piece & BLACK) && start_row == 4 && start_col == 0 && end_row == 6 && end_col == 0)
+        {
+            board->board[0][5] = ROOK | BLACK; // f8
+            board->board[0][7] = EMPTY;        // h8
+            board->board[0][4] = EMPTY;        // e8 (king moved)
+        }
+        // Black long castle: e8c8
+        else if ((piece & BLACK) && start_row == 4 && start_col == 0 && end_row == 2 && end_col == 0)
+        {
+            board->board[0][3] = ROOK | BLACK; // d8
+            board->board[0][0] = EMPTY;        // a8
+            board->board[0][4] = EMPTY;        // e8 (king moved)
+        }
+    }
+
+    // --- Move the king (or any other piece) ---
+    board->board[7 - end_col][end_row] = piece;
+    board->board[7 - start_col][start_row] = EMPTY;
+
+    // --- Switch turn ---
+    board->turn = (board->turn == WHITE) ? BLACK : WHITE;
 }
+
 
 char *stringjoin(char *s1, char *s2)
 {

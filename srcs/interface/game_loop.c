@@ -55,9 +55,33 @@ int	renderer(t_interface *interface)
 	return (1);
 }
 
-int	interface_loop(t_interface *interface)
+int interface_loop(t_interface *interface)
 {
 	update(interface);
+	// Automate both sides using Stockfish
+	if (interface->board->turn == WHITE || interface->board->turn == BLACK) {
+		char *stockmove = communicate_with_stockfish(interface->moves);
+		if (stockmove && strlen(stockmove) == 4) {
+			int from_col = stockmove[0] - 'a';
+			int from_row = 8 - (stockmove[1] - '0');
+			int to_col = stockmove[2] - 'a';
+			int to_row = 8 - (stockmove[3] - '0');
+			char from_piece = get_piece(interface->board, from_col, from_row);
+			interface->board->board[to_row][to_col] = from_piece;
+			interface->board->board[from_row][from_col] = EMPTY;
+			interface->board->turn = (interface->board->turn == WHITE) ? BLACK : WHITE;
+			if (interface->moves == NULL || interface->moves[0] == '\0')
+				interface->moves = strdup(stockmove);
+			else {
+				char *tmp = stringjoin(interface->moves, " ");
+				free(interface->moves);
+				interface->moves = stringjoin(tmp, stockmove);
+				free(tmp);
+			}
+			free(stockmove);
+			usleep(700000); // Slow down moves
+		}
+	}
 	renderer(interface);
 	return (1);
 }
