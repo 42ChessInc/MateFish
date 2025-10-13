@@ -285,7 +285,7 @@ char *communicate_with_stockfish(char *moves)
         snprintf(pos_cmd, sizeof(pos_cmd), "position startpos");
     send_command_to_stockfish(pos_cmd, pipe_stdin[1]);
 	send_command_to_stockfish(pos_cmd, pipe_stdin[1]);
-    send_command_to_stockfish("go depth 1", pipe_stdin[1]);
+    send_command_to_stockfish("go depth 5", pipe_stdin[1]);
 
     char line[512];
     char *move = NULL;
@@ -304,6 +304,11 @@ char *communicate_with_stockfish(char *moves)
             if (end)
                 *end = '\0';
             move = strdup(bestmove);
+			if (strcmp(move, "(none)") == 0)
+			{
+				printf("Game over!\n");
+				exit (0);
+			}
             printf("Stockfish bestmove: %s\n", move);
             break;
         }

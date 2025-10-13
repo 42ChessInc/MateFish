@@ -55,6 +55,78 @@ int	renderer(t_interface *interface)
 	return (1);
 }
 
+void	promote_piece(t_interface *interface, char target, int to_col, int to_row)
+{
+	if (interface->board->turn == WHITE)
+	{
+		if (target == 'q')
+		{
+			interface->board->board[to_row][to_col] = (QUEEN | WHITE);
+		}
+		else if (target == 'r')
+		{
+			interface->board->board[to_row][to_col] = (ROOK | WHITE);
+		}
+		else if (target == 'k')
+		{
+			interface->board->board[to_row][to_col] = (KNIGHT | WHITE);
+		}
+		else if (target == 'b')
+		{
+			interface->board->board[to_row][to_col] = (BISHOP | WHITE);
+		}
+	}
+	else if (interface->board->turn == BLACK)
+	{
+		if (target == 'q')
+		{
+			interface->board->board[to_row][to_col] = (QUEEN | BLACK);
+		}
+		else if (target == 'r')
+		{
+			interface->board->board[to_row][to_col] = (ROOK | BLACK);
+		}
+		else if (target == 'k')
+		{
+			interface->board->board[to_row][to_col] = (KNIGHT | BLACK);
+		}
+		else if (target == 'b')
+		{
+			interface->board->board[to_row][to_col] = (BISHOP | BLACK);
+		}
+	}
+	return ;
+}
+
+void	check_promotion(t_interface *interface, int to_col, int to_row, unsigned char from_piece, char *stockmove)
+{
+	int len = strlen(stockmove);
+	char target;
+
+	if (interface->board->turn == WHITE)
+	{
+		if (from_piece == (PAWN | WHITE))
+		{
+			if (to_row == 0 && len == 3)
+			{
+				target = stockmove[len - 1];
+				promote_piece(interface, target, to_col, to_row);
+				return ;
+			}
+		}
+		else if (from_piece == (PAWN | BLACK))
+		{
+			if (to_row == 7 && len == 3)
+			{
+				target = stockmove[len - 1];
+				promote_piece(interface, target, to_col, to_row);
+				return ;
+			}
+		}
+	}
+	return ;
+}
+
 int interface_loop(t_interface *interface)
 {
 	update(interface);
@@ -67,7 +139,7 @@ int interface_loop(t_interface *interface)
 			int to_col = stockmove[2] - 'a';
 			int to_row = 8 - (stockmove[3] - '0');
 			unsigned char from_piece = get_piece(interface->board, from_col, from_row);
-			
+			check_promotion(interface, to_col, to_row, from_piece, stockmove);
 			if (from_piece == (KING | WHITE) || from_piece == (KING | BLACK))
 			{
 				if (interface->board->turn == WHITE)
