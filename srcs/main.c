@@ -295,6 +295,12 @@ char *communicate_with_stockfish(char *moves)
             if (end)
                 *end = '\0';
             move = strdup(bestmove);
+			if (strcmp(move, "(none)") == 0)
+			{
+				printf("Game over!\n");
+				sleep(10);
+				exit(0);
+			}
             printf("Stockfish bestmove: %s\n", move);
             break;
         }
