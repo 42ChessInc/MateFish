@@ -18,12 +18,18 @@ MLX_DIR= ./libs/mlx
 
 MLX= $(MLX_DIR)/libmlx.a
 
+STOCK = ./Stockfish
+
 all: $(NAME)
 
 $(MLX):
 	if [ ! -d "$(MLX_DIR)" ]; then \
 			git clone https://github.com/42Paris/minilibx-linux.git $(MLX_DIR); \
 	fi
+	if [ ! -d "$(STOCK)" ]; then \
+			git clone https://github.com/official-stockfish/Stockfish.git; \
+	fi
+		cd Stockfish/src && make -j profile-build && mv stockfish ../../;
 		@$(MAKE) -C $(MLX_DIR)
 
 CFLAGS = -Wall -Werror -Wextra -Iincludes
