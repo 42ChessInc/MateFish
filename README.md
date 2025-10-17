@@ -10,6 +10,6 @@ make
 ## Game preview
 
 <div align="middle">
-    <img src="https://github.com/42ChessInc/MateFish/assets/MateFish.gif" width="480">
+    <img src="https://github.com/42ChessInc/MateFish/blob/main/assets/MateFish.gif" width="640">
   </a>
 </div>
