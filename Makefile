@@ -22,7 +22,7 @@ STOCK = ./Stockfish
 
 all: $(NAME)
 
-$(MLX):
+$(MLX): fclean
 	if [ ! -d "$(MLX_DIR)" ]; then \
 			git clone https://github.com/42Paris/minilibx-linux.git $(MLX_DIR); \
 	fi
@@ -61,6 +61,7 @@ $(NAME): $(SRCS_DIR) $(MLX)
 fclean: clean
 	rm -rf $(NAME)
 	rm -rf $(MLX_DIR)
+	rm -rf $(STOCK)
 clean:
 	rm -rf $(OBJS_DIR)
 re: fclean all
