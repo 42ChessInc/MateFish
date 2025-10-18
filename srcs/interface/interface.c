@@ -249,6 +249,7 @@ void run_chess(t_board *board)
 		fprintf(stderr, "Error allocating memory for index lookup.\n");
 		exit(EXIT_FAILURE);
 	}
+	memset(interface.index_lookup, 0, 64 * sizeof(unsigned char));
 	interface.mouse_pressed = 0;
 	interface.index_lookup[PAWN] = 0;
 	interface.index_lookup[ROOK] = 1;
