@@ -6,7 +6,7 @@
 #    By: gde-la-r <gde-la-r@student.42porto.com>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/09/20 21:47:37 by gde-la-r          #+#    #+#              #
-#    Updated: 2025/10/18 13:43:30 by gde-la-r         ###   ########.fr        #
+#    Updated: 2025/10/18 14:05:00 by gde-la-r         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,31 +14,28 @@ NAME= MateFish
 
 CC = cc
 
-MLX_DIR= ./libs/mlx
+MLX_DIR = ./libs/mlx
+MLX = $(MLX_DIR)/libmlx.a
 
-MLX= $(MLX_DIR)/libmlx.a
+STOCK_DIR = ./Stockfish
+STOCKFISH = ./stockfish
 
-STOCK = ./Stockfish
+OBJS_DIR = objs
+INC_DIR = includes
 
 all: $(NAME)
 
-# Path to the built Stockfish binary (moved to project root by the build step)
-STOCK_BIN = ./stockfish
-
-# Build or fetch MiniLibX library if needed. Do NOT force a clean here —
-# make will only run the mlx build if the library is missing or out-of-date.
 $(MLX):
 	if [ ! -d "$(MLX_DIR)" ]; then \
 		git clone https://github.com/42Paris/minilibx-linux.git $(MLX_DIR); \
 	fi
 	@$(MAKE) -C $(MLX_DIR)
 
-# Build or fetch Stockfish binary if needed. Only builds when the binary is missing.
-$(STOCK_BIN):
-	if [ ! -d "$(STOCK)" ]; then \
+$(STOCKFISH):
+	if [ ! -d "$(STOCK_DIR)" ]; then \
 		git clone https://github.com/official-stockfish/Stockfish.git; \
 	fi
-	cd $(STOCK)/src && make -j profile-build && mv stockfish ../../ || true
+	cd $(STOCK_DIR)/src && make -j profile-build && mv stockfish ../../
 
 CFLAGS = -Wall -Werror -Wextra -Iincludes
 
@@ -59,17 +56,16 @@ SRCS_DIR = ./srcs/main.c \
 	./srcs/interface/drawboard.c \
 	./srcs/interface/get_piece.c
 
-OBJS_DIR = objs
 
-INC_DIR = includes
-
-$(NAME): $(SRCS_DIR) $(MLX)
+$(NAME): $(SRCS_DIR) $(MLX) $(STOCKFISH)
 	$(CC) $(CFLAGS) $(SRCS_DIR) -o $(NAME) $(LDFLAGS)
 
 fclean: clean
 	rm -rf $(NAME)
 	rm -rf $(MLX_DIR)
-	rm -rf $(STOCK)
+	rm -rf $(STOCK_DIR)
+	rm -rf $(STOCKFISH)
+
 clean:
 	rm -rf $(OBJS_DIR)
 
