@@ -6,7 +6,7 @@
 #    By: gde-la-r <gde-la-r@student.42porto.com>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/09/20 21:47:37 by gde-la-r          #+#    #+#              #
-#    Updated: 2025/10/18 14:05:00 by gde-la-r         ###   ########.fr        #
+#    Updated: 2025/10/18 14:31:33 by gde-la-r         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,10 +14,11 @@ NAME= MateFish
 
 CC = cc
 
+LIBS = ./libs/
 MLX_DIR = ./libs/mlx
 MLX = $(MLX_DIR)/libmlx.a
 
-STOCK_DIR = ./Stockfish
+STOCK_DIR = ./libs/Stockfish
 STOCKFISH = ./stockfish
 
 OBJS_DIR = objs
@@ -33,9 +34,10 @@ $(MLX):
 
 $(STOCKFISH):
 	if [ ! -d "$(STOCK_DIR)" ]; then \
+		cd libs && \
 		git clone https://github.com/official-stockfish/Stockfish.git; \
 	fi
-	cd $(STOCK_DIR)/src && make -j profile-build && mv stockfish ../../
+	cd $(STOCK_DIR)/src && make -j profile-build && mv stockfish ../../../
 
 CFLAGS = -Wall -Werror -Wextra -Iincludes
 
@@ -62,7 +64,7 @@ $(NAME): $(SRCS_DIR) $(MLX) $(STOCKFISH)
 
 fclean: clean
 	rm -rf $(NAME)
-	rm -rf $(MLX_DIR)
+	rm -rf $(LIBS)
 	rm -rf $(STOCK_DIR)
 	rm -rf $(STOCKFISH)
 
