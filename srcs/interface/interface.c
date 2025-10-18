@@ -243,7 +243,7 @@ void run_chess(t_board *board)
 	interface.moves = NULL;
 
 	interface.board = board;
-	interface.index_lookup = malloc(64 * sizeof(unsigned char));
+	interface.index_lookup = calloc(64, sizeof(unsigned char));
 	if (!interface.index_lookup)
 	{
 		fprintf(stderr, "Error allocating memory for index lookup.\n");
