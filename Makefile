@@ -6,7 +6,7 @@
 #    By: gde-la-r <gde-la-r@student.42porto.com>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/09/20 21:47:37 by gde-la-r          #+#    #+#              #
-#    Updated: 2025/09/20 21:47:43 by gde-la-r         ###   ########.fr        #
+#    Updated: 2025/10/18 13:43:30 by gde-la-r         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,15 +22,23 @@ STOCK = ./Stockfish
 
 all: $(NAME)
 
-$(MLX): fclean
+# Path to the built Stockfish binary (moved to project root by the build step)
+STOCK_BIN = ./stockfish
+
+# Build or fetch MiniLibX library if needed. Do NOT force a clean here —
+# make will only run the mlx build if the library is missing or out-of-date.
+$(MLX):
 	if [ ! -d "$(MLX_DIR)" ]; then \
-			git clone https://github.com/42Paris/minilibx-linux.git $(MLX_DIR); \
+		git clone https://github.com/42Paris/minilibx-linux.git $(MLX_DIR); \
 	fi
+	@$(MAKE) -C $(MLX_DIR)
+
+# Build or fetch Stockfish binary if needed. Only builds when the binary is missing.
+$(STOCK_BIN):
 	if [ ! -d "$(STOCK)" ]; then \
-			git clone https://github.com/official-stockfish/Stockfish.git; \
+		git clone https://github.com/official-stockfish/Stockfish.git; \
 	fi
-		cd Stockfish/src && make -j profile-build && mv stockfish ../../;
-		@$(MAKE) -C $(MLX_DIR)
+	cd $(STOCK)/src && make -j profile-build && mv stockfish ../../ || true
 
 CFLAGS = -Wall -Werror -Wextra -Iincludes
 
@@ -64,4 +72,5 @@ fclean: clean
 	rm -rf $(STOCK)
 clean:
 	rm -rf $(OBJS_DIR)
+
 re: fclean all

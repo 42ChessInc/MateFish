@@ -55,3 +55,7 @@ dkms.conf
 *.dwo
 stockfish
 Stockfish
+
+# Third-party libraries
+libs/mlx/
+Stockfish/
