@@ -14,8 +14,9 @@
 
 char *stringjoin(char *s1, char *s2);
 
-int mouse_hook(int button, int x, int y, t_interface *interface)
+int mouse_hook(int button, int x, int y, void *param)
 {
+	t_interface *interface = (t_interface *)param;
 	char piece;
 	char move[5] = {0}; //
 	char *stockmove = NULL;

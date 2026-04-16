@@ -4,7 +4,6 @@
 #include "board.h"
 
 #include "../libs/mlx/mlx.h"
-#include "../libs/mlx/mlx_int.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -12,6 +11,7 @@
 #include <math.h>
 #include <sys/time.h>
 #include <time.h>
+#include <X11/X.h>
 
 //get all prototypes from interface folder
 

@@ -2,18 +2,10 @@
 
 ## Usage
 
-- Download stockfish
-```txt
-https://stockfishchess.org/
-```
-- Change the name of the executable file ```stockfish-ubuntu-x86-64``` to ```stockfish```
-
-- Now you can download our game code and add ```stockfish``` file in the repo root
 ```shell
 git clone https://github.com/42ChessInc/MateFish.git
-cd MateFish
 make
-./Matefish 
+./Matefish
 ```
 ## Game preview
 
